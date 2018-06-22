@@ -16,4 +16,25 @@ var wink = $('#wink');
 title.css('text-align', 'center');
 wink.css('height', '30px');
 
-// Go nuts
+
+class Topic {
+    constructor(queryString, firstSource, secondSource) {
+        this.queryString = queryString;
+        this.firstSource = firstSource;
+        this.secondSource = secondSource;
+        this.firstSourceSentiment;
+        this.secondSource
+    }
+
+    setSources() {
+
+    }
+}
+
+
+// news API
+
+
+
+
+
