@@ -10,11 +10,19 @@ try {
     console.log('Failed to initialize database');
 }
 
+// Initialize Sentimood
+var sentimood = new Sentimood();
+
+// Example analysis
+console.log(sentimood.analyze("This amazing project kick ass"));
+
+
 // Delete this out - just for reference
 var title = $('#title');
 var wink = $('#wink');
 title.css('text-align', 'center');
 wink.css('height', '30px');
+
 
 
 class Topic {
