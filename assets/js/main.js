@@ -16,27 +16,60 @@ var sentimood = new Sentimood();
 // Example analysis
 console.log(sentimood.analyze("This amazing project kick ass"));
 
-
-// Delete this out - just for reference
-var title = $('#title');
-var wink = $('#wink');
-title.css('text-align', 'center');
-wink.css('height', '30px');
-
+var searchParam = $("#search-term").val().trim();
+var baseURL = "https://newsapi.org/v2/top-headlines?pageSize=5&apiKey=efb42eaae6b94bce83b1568d1127f897&sources=";
 
 
 class Topic {
-    constructor(queryString, firstSource, secondSource) {
+    constructor(queryString) {
         this.queryString = queryString;
-        this.firstSource = firstSource;
-        this.secondSource = secondSource;
-        this.firstSourceSentiment;
-        this.secondSource
+        this.timestamp = new Date().getTime();
+        this.sources = ["cnn","fox-news","the-huffington-post","bbc-news","breitbart-news","vice-news"];
+        this.articleResults = [];
+        this.sentimentScores = {};
+        this.highSentimentArticle;
+        this.lowSentimentArticle;
     }
 
-    setSources() {
-
+    setSentimentScores(response) {
+        console.log(response);
+        // TODO - process the response and create an object with average sentiment for each 
+        return 0;
     }
+
+    getLinearScaleElement() {
+        //TODO use d3 to create a linear scale
+        return 0;
+    }
+
+    commit() {
+        db.push(this);
+        return 0;
+    }
+
+    querySource() {
+        // Combine Kevin's code
+        var baseURL = "https://newsapi.org/v2/top-headlines?pageSize=5&apiKey=" + newsApiKey +  "&q=" + this.queryString + "&sources=";
+        console.log(baseURL);
+        var that = this;
+        for (let i = 0; i < this.sources.length; i++) {
+            var source = this.sources[i];
+            $.ajax({
+                url: (baseURL + source),
+                method: "GET"
+            }).then(function(response) {
+                console.log(response);
+                for (let v = 0; v < response.articles.length; v++) {
+                    // console.log(response.articles[v]);
+                    that.articleResults.push(response.articles[v]);
+                };
+            });
+        }
+
+        return 0;
+    }
+
+
 }
 
 
