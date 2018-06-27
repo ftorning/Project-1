@@ -28,16 +28,56 @@
     <!-- Local CSS -->
     <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/style.css" />
     <!-- Local Credentials -->
-    <script src="./assets/js/credentials.js"></script>
+    <script src="./assets/js/config.js"></script>
 
     <!-- Go nuts -->
     <title>New Project</title>
 </head>
 <body>
+    <!-- Main Bootstrap Search -->
     <div class="container">
+        <!-- Jumbotron for Title -->
+        <div class="jumbotron" style="background-color: #20315A ; color: white;">
+            <h1 class="text-center"><strong><i class="fa fa-newspaper-o"></i> The Moody News</strong></h1>
+        </div>
+        <!-- Row for Searching New York Times -->
         <div class="row">
-            <div class="col-md-12">
-                <h1 id="title">Hey there <img id="wink" src="assets/img/delete-me.png" alt="winky" /> </h1>
+            <div class="col-sm-12">
+                <br>
+                <!-- First panel is for handling the search parameters -->
+                <div class="card">
+                    <div class="card-header">
+                        <strong><i class="fa fa-list-alt"></i> Search Parameters</strong>
+                    </div>
+                    <div class="card-body">
+                        <!-- Here we create an HTML Form for handling the inputs-->
+                        <form role="form">
+                            <!-- Here we create the text box for capturing the search term-->
+                            <div class="form-group">
+                                <label for="search">Search Term:</label>
+                            <input type="text" class="form-control" id="search-term">
+                            </div>
+                            <!-- Here we have our final submit button -->
+                            <button type="submit" class="btn btn-primary" id="run-search">
+                                <i class="fa fa-search"></i> Search</button>
+                            <button class="btn btn-primary" id="clear-all">
+                                <i class="fa fa-trash"></i> Clear Results</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- This row will handle all of the retrieved articles -->
+        <div class="row">
+            <div class="col-sm-12">
+                <br>
+                <!-- This panel will initially be made up of a panel and wells for each of the articles retrieved -->
+                <div class="card">
+                    <!-- Panel Heading for the retrieved articles box -->
+                   <div class="card-header"><strong><i class="fa fa-table"></i> Top Articles</strong></div>
+                    <!-- This main panel will hold each of the resulting articles -->
+                    <div class="card-body" id="article-section"></div>
+                </div>
             </div>
         </div>
     </div>
