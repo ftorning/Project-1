@@ -24,23 +24,40 @@ class Topic {
     constructor(queryString) {
         this.queryString = queryString;
         this.timestamp = new Date().getTime();
+        // hard-coded sources
         this.sources = ["cnn","fox-news","the-huffington-post","bbc-news","breitbart-news","vice-news"];
+        // actual article results with individual sentiment scores
         this.articleResults = [];
-        this.sentimentScores = {};
+        // aggregate sentiment scores
+        this.sentimentScores = [];
+        // not implemented yet
         this.highSentimentArticle;
         this.lowSentimentArticle;
     }
 
     setSentimentScores() {
+        // ofirst calculate individual scores
+        for (let a = 0; a < this.articleResults.length; a++) {
+            // conatenate title and description for analysis
+            let articleString = this.articleResults[a].title + " " + this.articleResults[a].description
+            // create a new sentiment key for each article and set val to sentimood results
+            this.articleResults[a].sentiment = sentimood.analyze(articleString);
+        }
+        // each source, loop through and is the article source matches, sum sentiment score
         for (let i = 0; i < this.sources.length; i++) {
+            let sum = 0;
+            let count = 0;
+            let aggScore = {};
             for (var j = 0; j < this.articleResults.length; j++) {
-                console.log("source: " + this.sources[i] + "article result:" + this.articleResults[j].source.id);
                 if (this.sources[i] === this.articleResults[j].source.id) {
-                    console.log("here");
+                    sum += this.articleResults[j].sentiment.score
+                    count++;
                 }
             }
+            aggScore[this.sources[i]] = sum / count;
+            this.sentimentScores.push(aggScore);
         }
-        console.log(response);
+        console.log(this.sentimentScores);
         // TODO - process the response and create an object with average sentiment for each 
         return 0;
     }
