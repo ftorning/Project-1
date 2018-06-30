@@ -68,45 +68,46 @@ class Topic {
     }
         
     populateResults() {
-        // console.log(this.sentimentScores[0].cnn);
-        // console.log(Object.getOwnPropertyNames(this.sentimentScores[0]));
-        if(this.articleResults.length < 1) {
+        var data = this.getSentimentScores();
+        // console.log(data[0].cnn);
+        // console.log(Object.getOwnPropertyNames(data[0]));
+        if(data.length < 1) {
              // modal window pop-up
 
          } else {   //{cnn:1.5}
-            for (var i = 0; i < this.sentimentScores.length; i++) {
-                console.log("This is the thing that does it", Object.keys(this.sentimentScores[i])[0])
+            for (var i = 0; i < data.length; i++) {
+                console.log("This is the thing that does it", Object.keys(data[i])[0])
 
-            switch (Object.keys(this.sentimentScores[i])[0]) {
+            switch (Object.keys(data[i])[0]) {
         
-            case "cnn": //Object.keys(this.sentimentScores[i])[0] === "cnn";
-            console.log("The average sentimentScore for CNN is:", Object.values(this.sentimentScores[i])[0]); //sentiment score
-            $("#cnn").append(Object.values(this.sentimentScores[i])[0]);
+            case "cnn": //Object.keys(data[i])[0] === "cnn";
+            console.log("The average sentimentScore for CNN is:", Object.values(data[i])[0]); //sentiment score
+            $("#cnn").append(Object.values(data[i])[0]);
             break;
 
-            case "fox-news": //Object.keys(this.sentimentScores[i])[0] === "fox-news";
-            console.log("The average sentimentScore for Fox News is:", Object.values(this.sentimentScores[i])[0]); //sentiment score
-            $("#fox").append(Object.values(this.sentimentScores[i])[0]);
+            case "fox-news": //Object.keys(data[i])[0] === "fox-news";
+            console.log("The average sentimentScore for Fox News is:", Object.values(data[i])[0]); //sentiment score
+            $("#fox").append(Object.values(data[i])[0]);
             break;
 
-            case "the-huffington-post": //Object.keys(this.sentimentScores[i])[0] === "the-huffington-post";
-            console.log("The average sentimentScore for Huffington Post is:", Object.values(this.sentimentScores[i])[0]); //sentiment score
-            $("#huff").append(Object.values(this.sentimentScores[i])[0]);
+            case "the-huffington-post": //Object.keys(data[i])[0] === "the-huffington-post";
+            console.log("The average sentimentScore for Huffington Post is:", Object.values(data[i])[0]); //sentiment score
+            $("#huff").append(Object.values(data[i])[0]);
             break;
 
-            case "bbc-news": //Object.keys(this.sentimentScores[i])[0] === "bbc-news";
-            console.log("The average sentimentScore for BBC is:", Object.values(this.sentimentScores[i])[0]); //sentiment score
-            $("#bbc").append(Object.values(this.sentimentScores[i])[0]);
+            case "bbc-news": //Object.keys(data[i])[0] === "bbc-news";
+            console.log("The average sentimentScore for BBC is:", Object.values(data[i])[0]); //sentiment score
+            $("#bbc").append(Object.values(data[i])[0]);
             break;
 
-            case "breitbart-news": //Object.keys(this.sentimentScores[i])[0] === "breitbart-news";
-            console.log("The average sentimentScore for Breitbart is:", Object.values(this.sentimentScores[i])[0]); //sentiment score
-            $("#breit").append(Object.values(this.sentimentScores[i])[0]);
+            case "breitbart-news": //Object.keys(data[i])[0] === "breitbart-news";
+            console.log("The average sentimentScore for Breitbart is:", Object.values(data[i])[0]); //sentiment score
+            $("#breit").append(Object.values(data[i])[0]);
             break;
 
-            case "vice-news": //Object.keys(this.sentimentScores[i])[0] === "vice-news";
-            console.log("The average sentimentScore for Vice is:", Object.values(this.sentimentScores[i])[0]); //sentiment score
-            $("#vice").append(Object.values(this.sentimentScores[i])[0]);
+            case "vice-news": //Object.keys(data[i])[0] === "vice-news";
+            console.log("The average sentimentScore for Vice is:", Object.values(data[i])[0]); //sentiment score
+            $("#vice").append(Object.values(data[i])[0]);
             break;
 
             }
