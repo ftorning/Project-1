@@ -21,48 +21,52 @@ var baseURL = "https://newsapi.org/v2/top-headlines?pageSize=5&apiKey=efb42eaae6
 
 
 class Topic {
-    constructor(queryString) {
+    constructor(queryString, timestamp=null, articleResults=null) {
         this.queryString = queryString;
-        this.timestamp = new Date().getTime();
         // hard-coded sources
         this.sources = ["cnn","fox-news","the-huffington-post","bbc-news","breitbart-news","vice-news"];
+        // timestamp 
+        this.timestamp = this.setTimestamp(timestamp);
         // actual article results with individual sentiment scores
-        this.articleResults = [];
+        this.articleResults = this.querySource(articleResults);
         // aggregate sentiment scores
-        this.sentimentScores = [];
         // not implemented yet
-        this.highSentimentArticle;
-        this.lowSentimentArticle;
+        // this.highSentimentArticle;
+        // this.lowSentimentArticle;
     }
 
-    setSentimentScores() {
-        // ofirst calculate individual scores
-        for (let a = 0; a < this.articleResults.length; a++) {
-            // conatenate title and description for analysis
-            let articleString = this.articleResults[a].title + " " + this.articleResults[a].description
-            // create a new sentiment key for each article and set val to sentimood results
-            this.articleResults[a].sentiment = sentimood.analyze(articleString);
+    setTimestamp(timestamp) {
+        if (!timestamp) {
+            return new Date().getTime();
+        } else {
+            return timestamp;
         }
+        
+    }
+
+    getSentimentScores() {
+        var res = [];
         // each source, loop through and is the article source matches, sum sentiment score
         for (let i = 0; i < this.sources.length; i++) {
             let sum = 0;
             let count = 0;
             let aggScore = {};
+            // issue here
             for (var j = 0; j < this.articleResults.length; j++) {
                 if (this.sources[i] === this.articleResults[j].source.id) {
+                    console.log(this.articleResults[j].sentiment.score);
                     sum += this.articleResults[j].sentiment.score
                     count++;
                 }
             }
             aggScore[this.sources[i]] = sum / count;
-            this.sentimentScores.push(aggScore);
+            res.push(aggScore);
         }
-        console.log(this.sentimentScores);
-        // TODO - process the response and create an object with average sentiment for each 
-        return 0;
+        console.log(res);
+        return res;
 
     }
-
+        
     populateResults() {
         // console.log(this.sentimentScores[0].cnn);
         // console.log(Object.getOwnPropertyNames(this.sentimentScores[0]));
@@ -130,29 +134,37 @@ class Topic {
         return 0;
     }
 
-    querySource() {
-        // Combine Kevin's code
-        var baseURL = "https://newsapi.org/v2/everything?pageSize=2&apiKey=" + newsApiKey +  "&q=" + this.queryString + "&sources=";
-        var that = this;
-        for (let i = 0; i < this.sources.length; i++) {
-            var source = this.sources[i];
-            $.ajax({
-                url: (baseURL + source),
-                method: "GET"
-            }).then(function(response) {
-                for (let v = 0; v < response.articles.length; v++) {
-                    // console.log(response.articles[v]);
-                    that.articleResults.push(response.articles[v]);
-                };
-            });
+    querySource(articleResults) {
+        if (articleResults) {
+            return articleResults;
+        } else {
+            // Combine Kevin's code
+            var baseURL = "https://newsapi.org/v2/everything?pageSize=2&apiKey=" + newsApiKey +  "&q=" + this.queryString + "&sources=";
+            var res = [];
+            var that = this;
+            for (let i = 0; i < this.sources.length; i++) {
+                var source = this.sources[i];
+                $.ajax({
+                    url: (baseURL + source),
+                    method: "GET"
+                }).then(function(response) {
+                    for (let v = 0; v < response.articles.length; v++) {
+                        let articleString = response.articles[v].title + " " + response.articles[v].description        
+                        // console.log(response.articles[v]);
+                        response.articles[v].sentiment = sentimood.analyze(articleString);
+                        res.push(response.articles[v]);
+                    };
+                });
+            }
+            console.log(res);
+            return res;
         }
-
-        return 0;
     }
 
-
+    getTimestamp() {
+        return this.timestamp;
+    }
 }
-
 
 $("#run-search").on("click", function(event){
 
