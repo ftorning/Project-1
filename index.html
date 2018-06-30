@@ -67,16 +67,39 @@
                 </div>
             </div>
         </div>
-        <!-- This row will handle all of the retrieved articles -->
+        <!-- This row will handle all of the retrieved average sentiment scores  -->
         <div class="row">
             <div class="col-sm-12">
                 <br>
-                <!-- This panel will initially be made up of a panel and wells for each of the articles retrieved -->
+                
                 <div class="card">
                     <!-- Panel Heading for the retrieved articles box -->
                    <div class="card-header"><strong><i class="fa fa-table"></i> Top Articles</strong></div>
                     <!-- This main panel will hold each of the resulting articles -->
                     <div class="card-body" id="article-section"></div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Vice</th>
+                                <th>HuffPost</th>
+                                <th>BBC</th>
+                                <th>CNN</th>
+                                <th>FoxNews</th>
+                                <th>Breitbart</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id = "vice"></td>
+                                <td id = "huff"></td>
+                                <td id = "bbc"></td>
+                                <td id = "cnn"></td>
+                                <td id = "fox"></td>
+                                <td id = "breit"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>
