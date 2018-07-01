@@ -13,11 +13,12 @@ try {
 // Initialize Sentimood
 var sentimood = new Sentimood();
 
-// Example analysis
-console.log(sentimood.analyze("This amazing project kick ass"));
+// results per source -- keep 1-2 for testing, ~5-10 when ready to demo
+var resultsPerSource = 2; 
 
 var searchParam = $("#search-term").val().trim();
-var baseURL = "https://newsapi.org/v2/top-headlines?pageSize=5&apiKey=efb42eaae6b94bce83b1568d1127f897&sources=";
+var baseURL = "https://newsapi.org/v2/top-headlines?pageSize=" + resultsPerSource + "&apiKey=efb42eaae6b94bce83b1568d1127f897&sources=";
+var currentTopic;
 
 
 class Topic {
@@ -54,84 +55,83 @@ class Topic {
             // issue here
             for (var j = 0; j < this.articleResults.length; j++) {
                 if (this.sources[i] === this.articleResults[j].source.id) {
-                    console.log(this.articleResults[j].sentiment.score);
-                    sum += this.articleResults[j].sentiment.score
+                    sum += this.articleResults[j].sentiment;
                     count++;
                 }
             }
             aggScore[this.sources[i]] = sum / count;
             res.push(aggScore);
         }
-        console.log(res);
         return res;
 
     }
         
     populateResults() {
+        $('#aggDisplay td').empty();
+        
+        
         var data = this.getSentimentScores();
-        // console.log(data[0].cnn);
-        // console.log(Object.getOwnPropertyNames(data[0]));
+        console.log(data);
         if(data.length < 1) {
              // modal window pop-up
 
          } else {   //{cnn:1.5}
             for (var i = 0; i < data.length; i++) {
-                console.log("This is the thing that does it", Object.keys(data[i])[0])
+                switch (Object.keys(data[i])[0]) {
+            
+                    case "cnn": //Object.keys(data[i])[0] === "cnn";
 
-            switch (Object.keys(data[i])[0]) {
-        
-            case "cnn": //Object.keys(data[i])[0] === "cnn";
-            console.log("The average sentimentScore for CNN is:", Object.values(data[i])[0]); //sentiment score
-            $("#cnn").append(Object.values(data[i])[0]);
-            break;
+                    $("#cnn").append(Object.values(data[i])[0]);
+                    break;
 
-            case "fox-news": //Object.keys(data[i])[0] === "fox-news";
-            console.log("The average sentimentScore for Fox News is:", Object.values(data[i])[0]); //sentiment score
-            $("#fox").append(Object.values(data[i])[0]);
-            break;
+                    case "fox-news": //Object.keys(data[i])[0] === "fox-news";
+                    $("#fox").append(Object.values(data[i])[0]);
+                    break;
 
-            case "the-huffington-post": //Object.keys(data[i])[0] === "the-huffington-post";
-            console.log("The average sentimentScore for Huffington Post is:", Object.values(data[i])[0]); //sentiment score
-            $("#huff").append(Object.values(data[i])[0]);
-            break;
+                    case "the-huffington-post": //Object.keys(data[i])[0] === "the-huffington-post";
+                    $("#huff").append(Object.values(data[i])[0]);
+                    break;
 
-            case "bbc-news": //Object.keys(data[i])[0] === "bbc-news";
-            console.log("The average sentimentScore for BBC is:", Object.values(data[i])[0]); //sentiment score
-            $("#bbc").append(Object.values(data[i])[0]);
-            break;
+                    case "bbc-news": //Object.keys(data[i])[0] === "bbc-news";
+                    $("#bbc").append(Object.values(data[i])[0]);
+                    break;
 
-            case "breitbart-news": //Object.keys(data[i])[0] === "breitbart-news";
-            console.log("The average sentimentScore for Breitbart is:", Object.values(data[i])[0]); //sentiment score
-            $("#breit").append(Object.values(data[i])[0]);
-            break;
+                    case "breitbart-news": //Object.keys(data[i])[0] === "breitbart-news";
+                    $("#breit").append(Object.values(data[i])[0]);
+                    break;
 
-            case "vice-news": //Object.keys(data[i])[0] === "vice-news";
-            console.log("The average sentimentScore for Vice is:", Object.values(data[i])[0]); //sentiment score
-            $("#vice").append(Object.values(data[i])[0]);
-            break;
+                    case "vice-news": //Object.keys(data[i])[0] === "vice-news";
+                    $("#vice").append(Object.values(data[i])[0]);
+                    break;
 
+                }
             }
-          }
         }
     }
-    
 
-
-    getLinearScaleElement() {
-        var temp = [{"cnn": 10,
-                    "fox-news": 12,
-                    "the-huffington-post": 15,
-                    "bbc-news": 11,
-                    "breitbart-news": 8,
-                    "vice-news": 5}] 
-        for (var i = 0; i < temp.length; i++) {
-            //TODO use d3 to create a linear scale
-            }
-        return 0;
+    populateMaxMinArticles() {
+        var maxArticles = [];
+        var minArticles = [];
+        
+        for (var i = 20; i >= -20; i--) {
+            for (var j = 0; j < this.articleResults.length; j++) {
+                if (this.articleResults[j].sentiment === i && maxArticles.length <= 3) {
+                    maxArticles.push(this.articleResults[j]);
+                } else if (this.articleResults[j].sentiment === (i * -1) && minArticles.length <= 3) {
+                    minArticles.push(this.articleResults[j]);
+                }
+            }    
+        }
+        
+        // TODO - iterate through maxArticles & maxArticles and add them to the appropriate html elements
+        console.log(maxArticles);
+        console.log(minArticles);
     }
-
+    
     commit() {
-        db.ref('/topic').push(this);
+        db.ref('/topic').push(this).then((snapshot) => {
+            currentTopic = snapshot.key;
+        });
         return 0;
     }
 
@@ -140,7 +140,7 @@ class Topic {
             return articleResults;
         } else {
             // Combine Kevin's code
-            var baseURL = "https://newsapi.org/v2/everything?pageSize=2&apiKey=" + newsApiKey +  "&q=" + this.queryString + "&sources=";
+            var baseURL = "https://newsapi.org/v2/everything?pageSize=5&apiKey=" + newsApiKey +  "&q=" + this.queryString + "&sources=";
             var res = [];
             var that = this;
             for (let i = 0; i < this.sources.length; i++) {
@@ -151,13 +151,11 @@ class Topic {
                 }).then(function(response) {
                     for (let v = 0; v < response.articles.length; v++) {
                         let articleString = response.articles[v].title + " " + response.articles[v].description        
-                        // console.log(response.articles[v]);
-                        response.articles[v].sentiment = sentimood.analyze(articleString);
+                        response.articles[v].sentiment = sentimood.analyze(articleString).score;
                         res.push(response.articles[v]);
                     };
                 });
             }
-            console.log(res);
             return res;
         }
     }
@@ -173,10 +171,28 @@ $("#run-search").on("click", function(event){
     var searchParam = $("#search-term").val().trim();
     var topic = new Topic(searchParam);
     topic.querySource()//.commit()
-    topic.commit()
-    
+    setTimeout(function(){
+        topic.commit();
+        console.log("here in timeout loop");
+        topic.populateResults();
+    }, 5000);
     // do other stuff
-    
-
-    console.log(topic.articleResults);
 });
+
+db.ref('topic').on("child_added", function(snapshot) {
+    var newItem = $('<button>');
+    newItem.text(snapshot.val().queryString)
+    newItem.val(snapshot.key);
+    newItem.addClass(["btn", "btn-primary"]);
+    $('#recent-searches').prepend(newItem);
+    
+       
+});
+
+$("body").on("click", '#recent-searches .btn', function(event) {
+    event.preventDefault();
+    console.log("here");
+    console.log($(this).val());
+    
+});
+
