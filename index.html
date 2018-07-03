@@ -13,6 +13,8 @@
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
         crossorigin="anonymous">
+    <!-- Font Awesome CSS Icons (For cool glyphicons) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
     <!-- Bootstrap Popper.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
@@ -34,49 +36,77 @@
     <title>New Project</title>
 </head>
 <body>
+     <!-- Navigation -->
+     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+            <div class="container">
+              <a class="navbar-brand" href="index.html">
+                <h1> <strong><i class="fa fa-newspaper-o"></i> Moody News</strong> </h1>
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home
+                      <span class="sr-only">(current)</span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="about.html">About Us</a>
+                  </li>
+                  
+                </ul>
+              </div>
+            </div>
+          </nav>
+          <br>
     <!-- Main Bootstrap Search -->
     <div class="container">
         <!-- Jumbotron for Title -->
-        <div class="jumbotron" style="background-color: #20315A ; color: white;">
+        <div class="jumbotron bg-dark" style="color: white;">
             <h1 class="text-center"><strong><i class="fa fa-newspaper-o"></i> The Moody News</strong></h1>
-        </div>
-        <!-- Row for Searching New York Times -->
-        <div class="row">
-            <div class="col-sm-12">
-                <br>
-                <!-- First panel is for handling the search parameters -->
-                <div class="card">
-                    <div class="card-header">
-                        <strong><i class="fa fa-list-alt"></i> Search Parameters</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Here we create an HTML Form for handling the inputs-->
-                        <form role="form">
-                            <!-- Here we create the text box for capturing the search term-->
-                            <div class="form-group">
-                                <label for="search">Search Term:</label>
-                            <input type="text" class="form-control" id="search-term">
-                            </div>
-                            <!-- Here we have our final submit button -->
-                            <button type="submit" class="btn btn-primary" id="run-search">
-                                <i class="fa fa-search"></i> Search</button>
-                            <button class="btn btn-primary" id="clear-all">
-                                <i class="fa fa-trash"></i> Clear Results</button>
-                        </form>
-                    </div>
+            <form role="form">
+                <!-- Here we create the text box for capturing the search term-->
+                <div class="form-group">
+                    <label for="search">Search Topic:</label>
+                <input type="text" class="form-control" id="search-term">
                 </div>
-            </div>
+                <!-- Here we have our final submit button -->
+                <button type="submit" class="btn btn-primary" id="run-search">
+                    <i class="fa fa-search"></i> Search</button>
+                <button class="btn btn-primary" id="clear-all">
+                    <i class="fa fa-trash"></i> Clear Results</button>
+            </form>
         </div>
-        <!-- This row will handle all of the retrieved average sentiment scores  -->
-        <div class="row">
-            <div class="col-sm-12">
-                <br>
+        <section>
+                <div class="row">
+
+                <div class="col-lg-6 col-md-12">
+                <div class="single-news mb-4">
+                <h3 class="font-weight-bold dark-grey-text mb-3"><a>Highest Sentiscore Articles </a></h3>
+                </div>
+                </div>
                 
-                <div class="card">
-                    <!-- Panel Heading for the retrieved articles box -->
-                   <div class="card-header"><strong><i class="fa fa-table"></i> Top Articles</strong></div>
-                    <!-- This main panel will hold each of the resulting articles -->
-                    <div class="card-body" id="article-section"></div>
+                <div class="col-lg-6 col-md-12">
+                <div class="single-news mb-4">
+                <h3 class="font-weight-bold dark-grey-text mb-3"><a> Lowest Sentiscore Articles</a></h3>
+                </div>
+                </div>
+
+                <div id="article-section"></div>
+
+                
+                
+                </div>
+                    <!-- Small news -->
+       
+        </section>
+            
+       
+
+
+                    
                     <table class="table">
                         <thead>
                             <tr>

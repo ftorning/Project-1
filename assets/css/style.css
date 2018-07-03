@@ -1,3 +1,43 @@
+body {
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+}
+
 #title {
     font-family: 'Montserrat', sans-serif;
+}
+
+h5{
+    pointer-events: none;
+    color:black;
+}
+
+
+
+
+
+
+#image-score{
+    vertical-align: top;
+    
+    /* To horizontally center images and caption */
+    text-align: center;
+    float:left;
+    
+    
+}
+
+#source-titleDate {
+    
+    display:block;
+    float:right;
+    
+    
+
+
 }
