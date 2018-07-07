@@ -17,7 +17,6 @@ var sentimood = new Sentimood();
 var resultsPerSource = 2; 
 
 var searchParam = $("#search-term").val().trim();
-var baseURL = "https://newsapi.org/v2/top-headlines?pageSize=" + resultsPerSource + "&apiKey=efb42eaae6b94bce83b1568d1127f897&sources=";
 var currentTopic;
 
 
@@ -29,7 +28,7 @@ class Topic {
         // timestamp 
         this.timestamp = this.setTimestamp(timestamp);
         // actual article results with individual sentiment scores
-        this.articleResults = this.querySource(articleResults);
+        this.articleResults = this.setArticleResults(articleResults);
         // aggregate sentiment scores
         // not implemented yet
         // this.highSentimentArticle;
@@ -43,6 +42,14 @@ class Topic {
             return timestamp;
         }
         
+    }
+
+    setArticleResults(articleResults) {
+        if (!articleResults) {
+            return [];
+        } else {
+            return articleResults;
+        }
     }
 
     getSentimentScores() {
@@ -77,32 +84,43 @@ class Topic {
 
          } else {   //{cnn:1.5}
             for (var i = 0; i < data.length; i++) {
+                let val = Object.values(data[i])[0];
+                let valDisplay = $('<span>');
+                if (val >= 3) {
+                    valDisplay.css({'color':'green', 'font-size':'30px'});
+                } else if (val <= -3) {
+                    valDisplay.css({'color':'red', 'font-size':'30px'});
+                } else {
+                    valDisplay.css({'font-size':'30px'});
+                }
+
+                valDisplay.text(val);
+
                 switch (Object.keys(data[i])[0]) {
             
-                    case "cnn": //Object.keys(data[i])[0] === "cnn";
+                    case "cnn": 
+                        $("#cnn").append(valDisplay);
+                        break;
 
-                    $("#cnn").append(Object.values(data[i])[0]);
-                    break;
+                    case "fox-news":
+                        $("#fox").append(valDisplay);
+                        break;
 
-                    case "fox-news": //Object.keys(data[i])[0] === "fox-news";
-                    $("#fox").append(Object.values(data[i])[0]);
-                    break;
+                    case "the-huffington-post":
+                        $("#huff").append(valDisplay);
+                        break;
 
-                    case "the-huffington-post": //Object.keys(data[i])[0] === "the-huffington-post";
-                    $("#huff").append(Object.values(data[i])[0]);
-                    break;
+                    case "bbc-news":
+                        $("#bbc").append(valDisplay);
+                        break;
 
-                    case "bbc-news": //Object.keys(data[i])[0] === "bbc-news";
-                    $("#bbc").append(Object.values(data[i])[0]);
-                    break;
+                    case "breitbart-news":
+                        $("#breit").append(valDisplay);
+                        break;
 
-                    case "breitbart-news": //Object.keys(data[i])[0] === "breitbart-news";
-                    $("#breit").append(Object.values(data[i])[0]);
-                    break;
-
-                    case "vice-news": //Object.keys(data[i])[0] === "vice-news";
-                    $("#vice").append(Object.values(data[i])[0]);
-                    break;
+                    case "vice-news": 
+                        $("#vice").append(valDisplay);
+                        break;
 
                 }
             }
@@ -110,20 +128,67 @@ class Topic {
     }
 
     populateMaxMinArticles() {
+        $('#high-article-section').empty();
+        $('#low-article-section').empty();
         var maxArticles = [];
         var minArticles = [];
         
+        function articleFormat(article, type) {
+            var articleCard = $('<div>');
+            articleCard.addClass(['row']);
+            articleCard.css({'padding-bottom':'20px'});
+            var articleImg = $('<img/>');
+            articleImg.attr({'src':article.urlToImage, 'alt':'Article Image'});
+            articleImg.addClass(["img", "col-sm-4"]);
+            articleImg.css({'width':'200px', 'max-height':'100px'});
+            var articleDetails = $('<div>');
+            articleDetails.addClass("col-sm-8");
+            
+            var scorePill = $('<span>');
+            scorePill.addClass(['badge', 'badge-pill', 'badge-danger']);
+            scorePill.text('SentiScore: ' + article.sentiment);
+
+            var lineBreak = $('<br>');
+
+            var articleSource = $('<p>');
+            articleSource.css({'font-weight':'bold', 'margin-bottom':"0px"});
+            articleSource.text(article.source.name);
+
+
+            var articleTitle = $('<a>');
+            articleTitle.attr({'href':article.url});
+            articleTitle.text(article.title);
+            
+            articleDetails.append([scorePill, articleSource, articleTitle]);
+            articleCard.append([articleImg, articleDetails]);
+
+            if (type == 'high') {
+                $('#high-article-section').append(articleCard);
+            } else if (type == 'low') {
+                $('#low-article-section').append(articleCard);
+            }
+
+        }
+        
         for (var i = 20; i >= -20; i--) {
             for (var j = 0; j < this.articleResults.length; j++) {
-                if (this.articleResults[j].sentiment === i && maxArticles.length <= 3) {
+                if (this.articleResults[j].sentiment === i && maxArticles.length <= 2) {
                     maxArticles.push(this.articleResults[j]);
-                } else if (this.articleResults[j].sentiment === (i * -1) && minArticles.length <= 3) {
+                } else if (this.articleResults[j].sentiment === (i * -1) && minArticles.length <= 2) {
                     minArticles.push(this.articleResults[j]);
                 }
             }    
         }
         
         // TODO - iterate through maxArticles & maxArticles and add them to the appropriate html elements
+        for (var i=0; i < maxArticles.length; i++) {
+            articleFormat(maxArticles[i], 'high');
+        }
+
+        for (var i=0; i < minArticles.length; i++) {
+            articleFormat(minArticles[i], 'low');
+        }
+        
         console.log(maxArticles);
         console.log(minArticles);
     }
@@ -140,26 +205,39 @@ class Topic {
             return articleResults;
         } else {
             // Combine Kevin's code
-            var baseURL = "https://newsapi.org/v2/everything?pageSize=5&apiKey=" + newsApiKey +  "&q=" + this.queryString + "&sources=";
+            var baseURL = "https://newsapi.org/v2/everything?pageSize=" + resultsPerSource + "&apiKey=" + newsApiKey +  "&q=" + this.queryString + "&sources=";
             var res = [];
+            var prom = []; 
             var that = this;
             for (let i = 0; i < this.sources.length; i++) {
                 var source = this.sources[i];
-                $.ajax({
+                var newResp = $.ajax({
                     url: (baseURL + source),
                     method: "GET"
-                }).then(function(response) {
-                    for (let v = 0; v < response.articles.length; v++) {
-                        let articleString = response.articles[v].title + " " + response.articles[v].description        
-                        response.articles[v].sentiment = sentimood.analyze(articleString).score;
-                        res.push(response.articles[v]);
-                    };
                 });
-            }
-            return res;
+                prom.push(newResp);
+                //console.log(newResp);
+            };
+
+            Promise.all(prom).then(function(vals) {
+                for (let v = 0; v < vals.length; v++) {
+                    for (let j = 0; j < vals[v].articles.length; j++) {
+                        let articleString = vals[v].articles[j].title + " " + vals[v].articles[j].description        
+                        vals[v].articles[j].sentiment = sentimood.analyze(articleString).score;
+                        that.articleResults.push(vals[v].articles[j]);
+                    }
+                    
+                }
+                console.log(that.articleResults);
+                that.commit();
+                that.populateResults();
+                that.populateMaxMinArticles();
+            });
+            
+            // return res;    
         }
     }
-
+    
     getTimestamp() {
         return this.timestamp;
     }
@@ -170,20 +248,15 @@ $("#run-search").on("click", function(event){
     event.preventDefault();
     var searchParam = $("#search-term").val().trim();
     var topic = new Topic(searchParam);
-    topic.querySource()//.commit()
-    setTimeout(function(){
-        topic.commit();
-        console.log("here in timeout loop");
-        topic.populateResults();
-    }, 5000);
-    // do other stuff
+    topic.querySource()
 });
 
 db.ref('topic').on("child_added", function(snapshot) {
     var newItem = $('<button>');
     newItem.text(snapshot.val().queryString)
     newItem.val(snapshot.key);
-    newItem.addClass(["btn", "btn-primary"]);
+    newItem.addClass(["btn", "btn-success"]);
+    newItem.css('margin', '10px');
     $('#recent-searches').prepend(newItem);
     
        
@@ -191,8 +264,13 @@ db.ref('topic').on("child_added", function(snapshot) {
 
 $("body").on("click", '#recent-searches .btn', function(event) {
     event.preventDefault();
-    console.log("here");
-    console.log($(this).val());
+    db.ref('topic').child($(this).val()).once('value').then(function(snap) {
+        var record = snap.val();
+        var topic = new Topic(record.queryString, record.timestamp, record.articleResults);
+        topic.populateResults();
+        topic.populateMaxMinArticles();
+    });
+    
     
 });
 
