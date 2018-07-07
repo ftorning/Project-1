@@ -247,14 +247,19 @@ $("#run-search").on("click", function(event){
 
     event.preventDefault();
     var searchParam = $("#search-term").val().trim();
+    // var articles = articleResults; 
+
     if (searchParam === ""){
         console.log("search can't be null");
-        $('#myModal').modal('show') 
+        $('#queryModal').modal('show'); 
+    
     } else {
         var topic = new Topic(searchParam);
         topic.querySource()
+        if (topic.articleResults === undefined || topic.articleResults.length == 0){
+        $('#nullModal').modal('show'); 
+        }
     }
-    
 });
 
 db.ref('topic').on("child_added", function(snapshot) {
