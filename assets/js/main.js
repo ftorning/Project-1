@@ -247,8 +247,14 @@ $("#run-search").on("click", function(event){
 
     event.preventDefault();
     var searchParam = $("#search-term").val().trim();
-    var topic = new Topic(searchParam);
-    topic.querySource()
+    if (searchParam === ""){
+        console.log("search can't be null");
+        $('#myModal').modal('show') 
+    } else {
+        var topic = new Topic(searchParam);
+        topic.querySource()
+    }
+    
 });
 
 db.ref('topic').on("child_added", function(snapshot) {
