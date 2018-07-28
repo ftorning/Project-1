@@ -255,10 +255,10 @@ $("#run-search").on("click", function(event){
     
     } else {
         var topic = new Topic(searchParam);
-        topic.querySource()
-        if (topic.articleResults === undefined || topic.articleResults.length == 0){
-        $('#nullModal').modal('show'); 
-        }
+        topic.querySource();
+        // if (topic.articleResults === undefined || topic.articleResults.length == 0){
+        // $('#nullModal').modal('show'); 
+        // }
     }
 });
 
