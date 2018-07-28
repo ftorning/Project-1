@@ -14,7 +14,7 @@ try {
 var sentimood = new Sentimood();
 
 // results per source -- keep 1-2 for testing, ~5-10 when ready to demo
-var resultsPerSource = 2; 
+var resultsPerSource = 5; 
 
 var searchParam = $("#search-term").val().trim();
 var currentTopic;
@@ -255,8 +255,8 @@ $("#run-search").on("click", function(event){
     
     } else {
         var topic = new Topic(searchParam);
-        topic.querySource()
-        // if (topic.articleResults === undefined || topic.articleResults.length === 0){
+        topic.querySource();
+        // if (topic.articleResults === undefined || topic.articleResults.length == 0){
         // $('#nullModal').modal('show'); 
         // }
     }
